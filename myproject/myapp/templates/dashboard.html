@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+ <div class="main-content">
+<!-- ===== TOP BAR ===== -->
+
+<div class="top-bar">
+
+  <h2 class="user-name">
+      Welcome {{ request.user.first_name }}
+  </h2>
+
+  <div class="right-icons">
+
+    <a href="{% url 'profile' %}">
+      {% if request.user.profile.photo %}
+      <img src="{{ request.user.profile.photo.url }}" class="profile-icon">
+      {% else %}
+      <img src="{% static 'img/user.png' %}" class="profile-icon">
+      {% endif %}
+    </a>
+
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    <button onclick="toggleDarkMode()" class="dark-btn">🌙</button>
+
+  </div>
+
+</div>
+
+
+
+
+<div class="top-bar">
+  <h2 class="user-name">
+      Welcome {{ request.user.first_name }}
+  </h2>
+
+</div>
+
+<!-- ===== DASHBOARD BOX ===== -->
+<div class="dashboard-box">
+
+<a class="btn-link" href="{% url 'add_reminder' %}">
+    Add Reminder
+</a>
+
+<h3>Your Reminders</h3>
+
+<table border="1">
+
+<tr>
+<th>Medicine</th>
+<th>Date</th>
+<th>Time</th>
+<th>Note</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for r in reminders %}
+<tr 
+  data-time="{{ r.time|time:'H:i' }}" 
+  data-status="{% if r.status %}taken{% else %}pending{% endif %}">
+
+<td>{{ r.medicine }}</td>
+<td>{{ r.date }}</td>
+<td>{{ r.time }}</td>
+<td>{{ r.note }}</td>
+
+<td>
+{% if r.status %}
+<span class="taken-status">✔ Taken</span>
+{% else %}
+<span class="pending-status">❌ Pending</span><br>
+<a href="{% url 'taken' r.id %}">Mark Taken</a>
+{% endif %}
+</td>
+
+<td>
+<button onclick="toggleEdit('{{ r.id }}')">Edit</button>
+<a href="{% url 'delete' r.id %}">Delete</a>
+</td>
+</tr>
+
+<!-- Hidden Edit Row -->
+<tr id="editRow{{ r.id }}" class="edit-row">
+<td colspan="6">
+<form method="POST" action="{% url 'edit' r.id %}">
+{% csrf_token %}
+<input type="text" name="medicine" value="{{ r.medicine }}">
+<input type="date" name="date" value="{{ r.date|date:'Y-m-d' }}">
+<input type="time" name="time" value="{{ r.time|time:'H:i' }}">
+<input type="text" name="note" value="{{ r.note }}">
+<button type="submit">Save</button>
+</form>
+</td>
+</tr>
+
+{% endfor %}
+
+</table>
+</div>
+
+<!-- ===== RINGTONE ===== -->
+<audio id="ringtone">
+  <source src="{% static 'sound/m_tone.mp3' %}" type="audio/mp3">
+</audio>
+
+<!-- ===== JS SECTION ===== -->
+
+<script>
+document.body.addEventListener("click", function unlockSound() {
+  let audio = document.getElementById("ringtone");
+  audio.play().then(() => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+  document.body.removeEventListener("click", unlockSound);
+});
+</script>
+
+
+
+<script>
+
+/* EDIT TOGGLE */
+function toggleEdit(id) {
+  let row = document.getElementById("editRow" + id);
+  row.style.display = row.style.display === "table-row" ? "none" : "table-row";
+}
+
+/* DARK MODE */
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+  localStorage.setItem("darkMode",
+    document.body.classList.contains("dark-mode"));
+}
+if (localStorage.getItem("darkMode") === "true") {
+  document.body.classList.add("dark-mode");
+}
+
+/* SOUND */
+function playSound() {
+  document.getElementById("ringtone").play();
+}
+
+/* REPEAT ALARM */
+let alarmInterval = null;
+
+function startAlarmLoop() {
+  if (!alarmInterval) {
+    playSound();
+    alarmInterval = setInterval(playSound, 120000);
+  }
+}
+
+function stopAlarmLoop() {
+  clearInterval(alarmInterval);
+  alarmInterval = null;
+}
+
+/* CHECK REMINDER */
+function checkReminder() {
+
+  let rows = document.querySelectorAll("tr[data-time]");
+  let now = new Date();
+  let h = now.getHours();
+  let m = now.getMinutes();
+
+  rows.forEach(row => {
+
+    let reminderTime = row.getAttribute("data-time");
+    let status = row.getAttribute("data-status");
+
+    let parts = reminderTime.split(":");
+    let rh = parseInt(parts[0]);
+    let rm = parseInt(parts[1]);
+
+    if (status === "pending" && rh === h && rm === m) {
+        startAlarmLoop();
+    }
+
+    if (status === "taken") {
+        stopAlarmLoop();
+    }
+
+  });
+}
+
+setInterval(checkReminder, 60000);
+
+</script>
+
+
+</div>
+
+<footer class="main-footer">
+© 2026 MediCare Reminder | Made by Ritik
+</footer>
+
+
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Reminder</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+
+<nav class="navbar">
+
+  <div class="nav-left">
+    MediCare Reminder
+  </div>
+
+  <div class="nav-right">
+    <a href="{% url 'login' %}" class="nav-btn">Login</a>
+    <a href="{% url 'register' %}" class="nav-btn register">Register</a>
+  </div>
+
+</nav>
+
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+
+    <h1 class="welcome-title">
+        Welcome to Your Medical Reminder App
+    </h1>
+
+</div>
+
+
+<!-- ===== FOOTER ===== -->
+<footer class="main-footer">
+© 2026 MediCare Reminder | Made by Ritik
+</footer>
+
+</body>
+</html>

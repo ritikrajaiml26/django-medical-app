@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login page h ye </title>
+    {% load static %}
+ <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+<body>
+<div class="main-content">
+    
+<h1>LOGIN</h1>
+
+{% if error %}
+<script>alert("{{ error }}");</script>
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+
+
+
+<form method="POST">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="Email"><br><br>
+
+    <input type="password" name="password" placeholder="Password"><br><br>
+    <button type="submit">Login</button>
+</form>
+
+<a href="{% url 'register' %}">Create Account</a>
+
+
+
+</div>
+
+<footer class="main-footer">
+© 2026 MediCare Reminder | Made by Ritik
+</footer>
+
+
+
+</body>
+</html>

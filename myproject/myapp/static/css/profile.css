@@ -1,0 +1,134 @@
+/* ===== BODY BACKGROUND ===== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #6dd5fa, #2980b9);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== MAIN PROFILE CARD ===== */
+.profile-box {
+  width: 92%;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 28px;
+  border-radius: 18px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  animation: fadeSlide 0.7s ease-in-out;
+}
+
+/* ===== ENTRY ANIMATION ===== */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TITLE ===== */
+.profile-box h2 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+  letter-spacing: 1px;
+}
+
+/* ===== PROFILE IMAGE ===== */
+.profile-box img {
+  width: 135px;
+  height: 135px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #3498db;
+  margin-bottom: 12px;
+  transition: 0.4s;
+}
+
+/* HOVER GLOW */
+.profile-box img:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 20px #3498db;
+}
+
+/* ===== USER INFO TEXT ===== */
+.profile-box p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #444;
+}
+
+/* ===== INPUTS & TEXTAREA ===== */
+.profile-box input,
+.profile-box textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+.profile-box input:focus,
+.profile-box textarea:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 8px #3498db55;
+}
+
+/* ===== SAVE BUTTON ===== */
+.profile-box button {
+  margin-top: 18px;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.profile-box button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 12px #2980b9;
+}
+
+/* ===== LINKS ===== */
+.profile-box a {
+  text-decoration: none;
+  font-size: 14px;
+  color: #3498db;
+  transition: 0.3s;
+}
+
+.profile-box a:hover {
+  text-decoration: underline;
+  color: #1d6fa5;
+}
+
+/* ===== LOGOUT LINK ===== */
+.profile-box .logout {
+  color: red;
+  font-weight: bold;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 600px) {
+
+  .profile-box {
+    padding: 20px;
+  }
+
+  .profile-box img {
+    width: 105px;
+    height: 105px;
+  }
+
+  .profile-box button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

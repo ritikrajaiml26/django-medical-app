@@ -1,0 +1,663 @@
+
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* center horizontally */
+  justify-content: center;  /* center vertically */
+  min-height: 100vh;
+}
+
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* login box center */
+  justify-content: center;
+}
+
+
+
+
+
+
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Animated Background */
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(-45deg, #667eea, #764ba2, #6dd5ed, #2193b0);
+    background-size: 400% 400%;
+    animation: bgMove 12s ease infinite;
+    flex-direction: column;
+}
+
+/* Background Animation */
+@keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Heading */
+h1 {
+    color: white;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    animation: floatText 3s ease-in-out infinite;
+}
+
+/* Form Box */
+form {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 35px 40px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: fadeIn 1.2s ease;
+}
+
+/* Inputs */
+input {
+    width: 260px;
+    padding: 12px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px white;
+}
+
+/* Button */
+button {
+    width: 270px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #333;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Bottom Link (Create Account / Login) */
+a {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes floatText {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+/* Bottom Links for Login/Register */
+.bottom-link {
+    display: block;
+    margin-top: 18px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    background: none;   /* IMPORTANT */
+}
+
+.bottom-link:hover {
+    text-decoration: underline;
+}
+
+
+/* User Name Top Left */
+.user-name {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: capitalize;
+    text-shadow: 0 0 8px rgba(255,255,255,0.4);
+    animation: welcomeGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes welcomeGlow {
+    from { text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+    to { text-shadow: 0 0 18px rgba(255,255,255,0.9); }
+}
+
+
+
+
+
+
+
+
+
+
+/* Dashboard Heading */
+h2 {
+    color: white;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+/* Sub Heading */
+h3 {
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Add Reminder Button Link */
+a {
+    background: white;
+    color: #333;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+a:hover {
+    background: #333;
+    color: white;
+}
+
+/* Table Container Look */
+table {
+    width: 80%;
+    max-width: 800px;
+    margin-top: 15px;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    animation: fadeIn 1.2s ease;
+}
+
+/* Table Head */
+th {
+    background: rgba(0,0,0,0.3);
+    color: white;
+    padding: 12px;
+    font-size: 15px;
+}
+
+/* Table Data */
+td {
+    padding: 10px;
+    color: white;
+    text-align: center;
+}
+
+/* Table Rows Hover */
+tr:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+
+
+
+
+.btn-link {
+    background: linear-gradient(45deg, #00f5ff, #9d4edd);
+    color: white;
+    padding: 12px 26px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px rgba(157,78,221,0.6);
+    transition: 0.4s;
+    animation: pulseBtn 2s infinite;
+}
+
+.btn-link:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(0,245,255,0.9);
+}
+
+@keyframes pulseBtn {
+    0% { box-shadow: 0 0 10px rgba(157,78,221,0.4); }
+    50% { box-shadow: 0 0 25px rgba(0,245,255,0.8); }
+    100% { box-shadow: 0 0 10px rgba(157,78,221,0.4); }
+}
+
+
+.reminder-title {
+    color: #ffffff;
+    margin-top: 25px;
+    font-size: 22px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: slideFade 1.5s ease;
+}
+
+@keyframes slideFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+table {
+    width: 80%;
+    max-width: 900px;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.15),
+        rgba(255,255,255,0.05)
+    );
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: tableEntry 1.3s ease;
+}
+
+/* Table Animation */
+@keyframes tableEntry {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+th {
+    background: linear-gradient(45deg, #9d4edd, #5a189a);
+    color: white;
+    padding: 14px;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+/* Data Cells */
+td {
+    padding: 12px;
+    color: white;
+    text-align: center;
+    transition: 0.3s;
+}
+
+/* Row Hover Animation */
+tr:hover td {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.02);
+}
+
+
+
+
+.edit-row {
+    display: none;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+
+.dashboard-box {
+  width: 95%;
+  padding: 10px;
+}
+
+table {
+  font-size: 14px;
+}
+
+table input,
+table button {
+  max-width: 100px;
+  font-size: 13px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+}
+
+
+
+
+
+
+
+
+
+/* Table Cleaner Look */
+table td {
+  padding: 10px;
+}
+
+table th {
+  font-size: 16px;
+}
+
+
+
+
+/* Taken Status Green Animation */
+.taken-status {
+  color: #00ff88;
+  font-weight: bold;
+  animation: glowGreen 1.2s infinite alternate;
+}
+
+@keyframes glowGreen {
+  from {
+    text-shadow: 0 0 5px #00ff88;
+  }
+  to {
+    text-shadow: 0 0 15px #00ff88;
+  }
+}
+
+
+
+.pending-status {
+  color: red;
+  font-weight: bold;
+}
+
+
+
+
+.dark-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #333;
+  color: white;
+  margin-left: 10px;
+}
+
+/* Dark Mode Body */
+.dark-mode {
+  background: #121212 !important;
+  color: white !important;
+}
+
+/* Card */
+.dark-mode .dashboard-box {
+  background: #1e1e1e;
+  color: white;
+}
+
+/* Table */
+.dark-mode table {
+  background: #1e1e1e;
+  color: white;
+}
+
+.dark-mode th {
+  background: #333;
+}
+
+.dark-mode td {
+  border-color: #444;
+}
+
+
+
+
+
+
+/* ================= TOP BAR (WELCOME + DARK BUTTON) ================= */
+
+.top-bar {
+  display: flex;                  /* same line me rakhega */
+  justify-content: space-between; /* left-right push */
+  align-items: center;            /* vertical center */
+  width: 100%;
+  margin-top: 10px;               /* pura bar upar/niche move */
+  padding: 5px 0;                 /* upar-niche spacing */
+}
+
+/* Welcome text margin remove */
+.user-name {
+  margin: 0;
+}
+
+
+.dark-btn {
+  background: #333;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+
+  /* SIZE FIX */
+  width: 40px;        /* long box hat jayega */
+  height: 40px;       /* square banega */
+  padding: 0;         /* extra space remove */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;    /* moon icon size */
+}
+
+
+
+
+
+
+.right-icons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.profile-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.logout-btn {
+  text-decoration: none;
+  color: red;
+  font-weight: bold;
+}
+
+
+
+
+.profile-icon {
+  width: 60px;          /* size */
+  height: 60px;         /* same hona jaruri */
+  border-radius: 50%;   /* circle banata hai */
+  object-fit: cover;    /* image stretch nahi hogi */
+  border: 3px solid white; 
+  cursor: pointer;
+  transition: 0.3s;
+  background: white;    /* square background hat jayega */
+}
+
+/* Hover Glow */
+.profile-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px white;
+}
+
+
+
+
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;   /* ye page ko stretch karega */
+}
+
+/* FOOTER */
+.main-footer {
+  text-align: center;
+  padding: 12px 0;
+  background: rgba(0,0,0,0.25);
+  color: white;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+
+
+/* ===== BODY LAYOUT ===== */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6dd5fa, #2980b9);
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  width: 100%;
+  padding: 14px 40px;
+  display: flex;
+  justify-content: space-between;   /* left right split */
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* LEFT TEXT */
+.nav-left {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  letter-spacing: 1px;
+}
+
+/* RIGHT BUTTONS */
+.nav-right {
+  display: flex;
+  gap: 15px;
+}
+
+/* NAV BUTTON */
+.nav-btn {
+  text-decoration: none;
+  padding: 8px 16px;
+  background: white;
+  color: black;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.nav-btn:hover {
+  transform: scale(1.05);
+}
+
+/* REGISTER GREEN */
+.register {
+  background: #22c55e;
+  color: white;
+}
+
+.register:hover {
+  background: #16a34a;
+}
+
+/* ===== MAIN CONTENT CENTER ===== */
+.main-content {
+  flex: 1;                /* footer niche rakhega */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;    /* horizontal center */
+  justify-content: center;/* vertical center */
+  text-align: center;
+}
+
+/* ===== FOOTER ===== */
+.main-footer {
+  text-align: center;
+  padding: 12px 0;
+  background: rgba(0,0,0,0.25);
+  color: white;
+  font-size: 14px;
+}
