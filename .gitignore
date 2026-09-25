@@ -12,5 +12,7 @@ ENV/
 .vscode/
 .idea/
 
-# Local DB & Media
+# Local DB & Media & Static
 *.sqlite3
+staticfiles/
+backend/staticfiles/
