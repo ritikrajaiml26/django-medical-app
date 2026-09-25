@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - MediCare Reminder</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Modern Animated App CSS -->
+  <link rel="stylesheet" href="{% static 'css/app_modern.css' %}">
+</head>
+
+<body class="modern-app-body">
+
+  <!-- Ambient Glowing Background -->
+  <div class="app-ambient-bg">
+    <div class="app-glow-orb orb-top"></div>
+    <div class="app-glow-orb orb-bottom"></div>
+    <div class="app-grid-pattern"></div>
+  </div>
+
+  <!-- Minimal Header -->
+  <nav class="app-navbar">
+    <div class="app-nav-inner">
+      <a href="{% url 'home' %}" class="app-brand">
+        <div class="app-brand-icon">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span>MediCare</span>
+      </a>
+
+      <div class="app-nav-right">
+        <button id="themeToggle" class="btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="{% url 'login' %}" class="user-profile-badge" style="color: #38bdf8;">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Register Form Box -->
+  <main class="auth-page-container">
+    <div class="auth-glass-box" style="max-width: 500px;">
+      
+      <div class="auth-header-wrapper">
+        <div class="auth-logo-badge">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Join MediCare to keep your medicine routine on track</p>
+      </div>
+
+      <!-- Errors -->
+      {% if email_error %}
+      <div class="auth-alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ email_error }}</span>
+      </div>
+      {% endif %}
+
+      {% if password_error %}
+      <div class="auth-alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ password_error }}</span>
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        
+        <!-- Name Row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="first_name">First Name</label>
+            <div class="input-with-icon">
+              <input type="text" id="first_name" name="first_name" class="app-input" placeholder="Ritik" value="{{ first_name|default:'' }}" required>
+              <i class="fa-solid fa-user field-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="last_name">Last Name</label>
+            <div class="input-with-icon">
+              <input type="text" id="last_name" name="last_name" class="app-input" placeholder="Raj" value="{{ last_name|default:'' }}" required>
+              <i class="fa-regular fa-user field-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-with-icon">
+            <input type="email" id="email" name="email" class="app-input" placeholder="name@example.com" value="{{ email|default:'' }}" required autocomplete="email">
+            <i class="fa-solid fa-envelope field-icon"></i>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password (min. 6 characters)</label>
+          <div class="input-with-icon">
+            <input type="password" id="password" name="password" class="app-input" placeholder="Create a secure password" required autocomplete="new-password">
+            <i class="fa-solid fa-lock field-icon"></i>
+            <button type="button" id="togglePasswordBtn" style="position: absolute; right: 1rem; background: none; border: none; color: var(--text-dim); cursor: pointer;">
+              <i class="fa-solid fa-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label class="form-label" for="confirm_password">Confirm Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="confirm_password" name="confirm_password" class="app-input" placeholder="Re-type password" required autocomplete="new-password">
+            <i class="fa-solid fa-shield-heart field-icon"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit">
+          <span>Complete Registration</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="auth-bottom-links">
+        <p>Already have an account? <a href="{% url 'login' %}" class="auth-link">Sign In</a></p>
+        <p style="margin-top: 0.75rem;">
+          <a href="{% url 'home' %}" style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    © 2026 MediCare Reminder | Made with ❤️ by Ritik
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('medicareTheme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-theme');
+      if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('medicareTheme', isLight ? 'light' : 'dark');
+        themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      });
+    }
+
+    // Toggle password visibility
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const pwdInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm_password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = pwdInput.type === 'password';
+        pwdInput.type = isPassword ? 'text' : 'password';
+        confirmInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+  </script>
+</body>
+</html>

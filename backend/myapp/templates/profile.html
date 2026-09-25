@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - MediCare Reminder</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Modern Animated App CSS -->
+  <link rel="stylesheet" href="{% static 'css/app_modern.css' %}">
+</head>
+
+<body class="modern-app-body">
+
+  <!-- Ambient Glowing Background -->
+  <div class="app-ambient-bg">
+    <div class="app-glow-orb orb-top"></div>
+    <div class="app-glow-orb orb-bottom"></div>
+    <div class="app-grid-pattern"></div>
+  </div>
+
+  <!-- Minimal Header -->
+  <nav class="app-navbar">
+    <div class="app-nav-inner">
+      <a href="{% url 'dashboard' %}" class="app-brand">
+        <div class="app-brand-icon">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span>MediCare</span>
+      </a>
+
+      <div class="app-nav-right">
+        <button id="themeToggle" class="btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="{% url 'dashboard' %}" class="user-profile-badge">
+          <i class="fa-solid fa-arrow-left"></i> Dashboard
+        </a>
+        <a href="{% url 'logout' %}" class="btn-nav-logout" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Profile Card Container -->
+  <main class="dashboard-main-container">
+    <div class="profile-card-wrapper">
+      
+      <!-- Avatar Section -->
+      <div class="profile-avatar-center">
+        {% if profile.photo %}
+          <img src="{{ profile.photo.url }}" alt="Profile Photo" id="avatarPreview" class="profile-big-avatar">
+        {% else %}
+          <div class="profile-avatar-fallback" id="avatarFallback">
+            {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+          </div>
+          <img src="" alt="Profile Photo" id="avatarPreview" class="profile-big-avatar" style="display: none; margin: 0 auto 1rem auto;">
+        {% endif %}
+
+        <h2 class="profile-user-title">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+        <p class="profile-user-email">{{ request.user.email }}</p>
+      </div>
+
+      <!-- Update Form -->
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Names Row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="first_name">First Name</label>
+            <div class="input-with-icon">
+              <input type="text" id="first_name" name="first_name" class="app-input" value="{{ request.user.first_name }}" required>
+              <i class="fa-solid fa-user field-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="last_name">Last Name</label>
+            <div class="input-with-icon">
+              <input type="text" id="last_name" name="last_name" class="app-input" value="{{ request.user.last_name }}" required>
+              <i class="fa-regular fa-user field-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photo Upload -->
+        <div class="form-group">
+          <label class="form-label" for="photoInput">Update Profile Picture</label>
+          <div class="input-with-icon">
+            <input type="file" id="photoInput" name="photo" class="app-input" accept="image/*" style="padding-top: 0.65rem;">
+            <i class="fa-solid fa-camera field-icon"></i>
+          </div>
+        </div>
+
+        <!-- Health / Medical Notes -->
+        <div class="form-group">
+          <label class="form-label" for="note">Health & Medical Notes / Emergency Info</label>
+          <textarea id="note" name="note" class="app-input" rows="4" style="padding: 0.85rem 1rem; border-radius: 12px; resize: vertical;" placeholder="e.g. Allergies: Penicillin. Blood Group: O+. Doctor: Dr. Sharma (9876543210)">{{ profile.note }}</textarea>
+        </div>
+
+        <button type="submit" class="btn-auth-submit">
+          <i class="fa-solid fa-check"></i>
+          <span>Save Changes</span>
+        </button>
+
+        <a href="{% url 'dashboard' %}" class="btn-secondary-hero" style="width: 100%; justify-content: center; margin-top: 0.75rem; text-decoration: none;">
+          Back to Dashboard
+        </a>
+      </form>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    © 2026 MediCare Reminder | Built with ❤️ by Ritik
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('medicareTheme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-theme');
+      if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('medicareTheme', isLight ? 'light' : 'dark');
+        themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      });
+    }
+
+    // Photo live preview
+    const photoInput = document.getElementById('photoInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarFallback = document.getElementById('avatarFallback');
+
+    if (photoInput) {
+      photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            if (avatarPreview) {
+              avatarPreview.src = e.target.result;
+              avatarPreview.style.display = 'block';
+            }
+            if (avatarFallback) {
+              avatarFallback.style.display = 'none';
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

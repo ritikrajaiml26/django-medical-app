@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if is_edit %}Edit{% else %}Add{% endif %} Medicine Reminder - MediCare</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Modern Animated App CSS -->
+  <link rel="stylesheet" href="{% static 'css/app_modern.css' %}">
+</head>
+
+<body class="modern-app-body">
+
+  <!-- Ambient Glowing Background -->
+  <div class="app-ambient-bg">
+    <div class="app-glow-orb orb-top"></div>
+    <div class="app-glow-orb orb-bottom"></div>
+    <div class="app-grid-pattern"></div>
+  </div>
+
+  <!-- Minimal Header -->
+  <nav class="app-navbar">
+    <div class="app-nav-inner">
+      <a href="{% url 'dashboard' %}" class="app-brand">
+        <div class="app-brand-icon">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span>MediCare</span>
+      </a>
+
+      <div class="app-nav-right">
+        <button id="themeToggle" class="btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="{% url 'dashboard' %}" class="user-profile-badge">
+          <i class="fa-solid fa-arrow-left"></i> Dashboard
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Add / Edit Reminder Container -->
+  <main class="auth-page-container">
+    <div class="auth-glass-box" style="max-width: 520px;">
+      
+      <div class="auth-header-wrapper">
+        <div class="auth-logo-badge">
+          <i class="fa-solid fa-notes-medical"></i>
+        </div>
+        <h1 class="auth-title">{% if is_edit %}Edit Medicine{% else %}Add New Medicine{% endif %}</h1>
+        <p class="auth-subtitle">Configure your dose timing and audio alarm</p>
+      </div>
+
+      {% if error %}
+      <div class="auth-alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ error }}</span>
+      </div>
+      {% endif %}
+
+      <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Medicine Name -->
+        <div class="form-group">
+          <label class="form-label" for="medicine">Medicine Name & Dosage</label>
+          <div class="input-with-icon">
+            <input type="text" id="medicine" name="medicine" class="app-input" placeholder="e.g. Paracetamol 500mg" value="{{ edit_reminder.medicine|default:'' }}" required>
+            <i class="fa-solid fa-capsules field-icon"></i>
+          </div>
+        </div>
+
+        <!-- Date & Time Row -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="date">Reminder Date</label>
+            <div class="input-with-icon">
+              <input type="date" id="date" name="date" class="app-input" value="{% if edit_reminder %}{{ edit_reminder.date|date:'Y-m-d' }}{% endif %}" required>
+              <i class="fa-regular fa-calendar field-icon"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="time">Alarm Time</label>
+            <div class="input-with-icon">
+              <input type="time" id="time" name="time" class="app-input" value="{% if edit_reminder %}{{ edit_reminder.time|time:'H:i' }}{% endif %}" required>
+              <i class="fa-regular fa-clock field-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label class="form-label" for="note">Instructions / Doctor's Notes (Optional)</label>
+          <div class="input-with-icon">
+            <input type="text" id="note" name="note" class="app-input" placeholder="e.g. 1 Tablet after meal with warm water" value="{{ edit_reminder.note|default:'' }}">
+            <i class="fa-solid fa-clipboard-list field-icon"></i>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>{% if is_edit %}Update Reminder{% else %}Save & Set Alarm{% endif %}</span>
+        </button>
+
+        <a href="{% url 'dashboard' %}" class="btn-secondary-hero" style="width: 100%; justify-content: center; margin-top: 0.75rem; text-decoration: none;">
+          Cancel & Return
+        </a>
+      </form>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    © 2026 MediCare Reminder | Made with ❤️ by Ritik
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('medicareTheme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-theme');
+      if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('medicareTheme', isLight ? 'light' : 'dark');
+        themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      });
+    }
+
+    // Auto-fill today's date if empty
+    const dateInput = document.getElementById('date');
+    if (dateInput && !dateInput.value) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      dateInput.value = `${year}-${month}-${day}`;
+    }
+  </script>
+</body>
+</html>

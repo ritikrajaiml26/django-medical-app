@@ -1,0 +1,473 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediCare - Smart Medicine Reminder & Health Tracker</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Modern Animated Home CSS -->
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+
+<body class="home-body">
+
+  <!-- ================= AMBIENT BACKGROUND GLOWS & PARTICLES ================= -->
+  <div class="ambient-bg">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+    <div class="grid-pattern"></div>
+    
+    <!-- Floating Medicine Icons -->
+    <div class="floating-medical-particles">
+      <div class="particle p1">💊</div>
+      <div class="particle p2">❤️</div>
+      <div class="particle p3">🩺</div>
+      <div class="particle p4">⏰</div>
+      <div class="particle p5">🧪</div>
+    </div>
+  </div>
+
+  <!-- ================= STICKY NAVBAR ================= -->
+  <nav class="home-navbar">
+    <div class="navbar-inner">
+      <a href="{% url 'home' %}" class="brand-logo">
+        <div class="logo-icon-wrapper">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span class="brand-text">MediCare</span>
+        <span class="brand-badge">PRO</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#live-demo">Live Preview</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="btn-nav-register">
+            <i class="fa-solid fa-gauge-high"></i> Dashboard ({{ request.user.first_name|default:request.user.username }})
+          </a>
+          <a href="{% url 'logout' %}" class="btn-nav-login">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-nav-login">Login</a>
+          <a href="{% url 'register' %}" class="btn-nav-register">
+            Get Started Free <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= HERO SECTION ================= -->
+  <section class="hero-section">
+    <div class="hero-content">
+      
+      <!-- Pill Badge -->
+      <div class="hero-pill-badge">
+        <span class="pulse-dot"></span>
+        <span>Intelligent Health & Dosage Assistant</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="hero-title">
+        Never Miss a Dose.<br>
+        <span class="gradient-text">Live Healthy & Confident.</span>
+      </h1>
+
+      <!-- Description -->
+      <p class="hero-description">
+        Stay on top of your daily medications with automated audio alarms, customized dosage schedules, and instant compliance tracking. Designed for peace of mind.
+      </p>
+
+      <!-- ECG Live Pulse Bar -->
+      <div class="ecg-container">
+        <svg class="ecg-svg" viewBox="0 0 140 28">
+          <path class="ecg-line" d="M0,14 L30,14 L38,4 L45,24 L52,8 L58,18 L64,14 L140,14" />
+        </svg>
+        <span class="ecg-text">Live Heartbeat Rhythm • Vitals Stable</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="hero-cta-group">
+        {% if request.user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="btn-primary-hero">
+            Open Your Dashboard <i class="fa-solid fa-arrow-right arrow-icon"></i>
+          </a>
+        {% else %}
+          <a href="{% url 'register' %}" class="btn-primary-hero">
+            Start Free Today <i class="fa-solid fa-arrow-right arrow-icon"></i>
+          </a>
+        {% endif %}
+        
+        <button id="testAlarmBtn" class="btn-secondary-hero" type="button">
+          <i class="fa-solid fa-volume-high" id="alarmBtnIcon"></i>
+          <span id="alarmBtnText">Test Alarm Tone</span>
+        </button>
+      </div>
+
+      <!-- Trust Indicators -->
+      <div class="hero-trust">
+        <div class="trust-item">
+          <span class="icon">🔔</span>
+          <span>Audio Alert Sound</span>
+        </div>
+        <div class="trust-item">
+          <span class="icon">🛡️</span>
+          <span>100% Encrypted & Safe</span>
+        </div>
+        <div class="trust-item">
+          <span class="icon">⚡</span>
+          <span>Zero Missed Reminders</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= HERO 3D INTERACTIVE CARD ================= -->
+    <div class="hero-visual" id="live-demo">
+      
+      <!-- Floating Badge 1 (Streak) -->
+      <div class="floating-badge-streak">
+        <span class="streak-icon">🔥</span>
+        <div class="streak-info">
+          <div class="num">14 Days</div>
+          <div class="label">Adherence Streak</div>
+        </div>
+      </div>
+
+      <!-- Main Reminder Device Card -->
+      <div class="reminder-device-card">
+        
+        <!-- Live Clock & Tag -->
+        <div class="card-header-row">
+          <div class="live-time-wrapper">
+            <span class="live-time" id="cardClock">09:00:00</span>
+            <span class="live-am-pm" id="cardAmPm">AM</span>
+          </div>
+          <div class="card-pill-tag">
+            <i class="fa-solid fa-bell fa-shake"></i>
+            <span>DUE NOW</span>
+          </div>
+        </div>
+
+        <!-- Medicine Card Body -->
+        <div class="med-showcase-box">
+          <div class="med-info-top">
+            <div class="pill-3d-graphic">
+              💊
+            </div>
+            <div class="med-details">
+              <h4>Amoxicillin Trihydrate</h4>
+              <p class="med-dosage-text">Dosage: <strong>1 Capsule (500mg)</strong></p>
+            </div>
+          </div>
+
+          <div class="med-badge-timing">
+            <span class="timing-label">Instructions:</span>
+            <span class="timing-value">After Breakfast with Water</span>
+          </div>
+        </div>
+
+        <!-- Equalizer Sound Wave Animation -->
+        <div class="sound-wave-box" id="equalizerWave" title="Active Alert Sound Wave">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+
+        <!-- Interactive Buttons on Card -->
+        <div class="card-actions-grid">
+          <button class="btn-card-take" id="heroTakeBtn" type="button">
+            <i class="fa-solid fa-check"></i>
+            <span id="heroTakeText">Mark as Taken</span>
+          </button>
+          <button class="btn-card-snooze" id="heroSnoozeBtn" type="button">
+            <i class="fa-solid fa-clock-rotate-left"></i> Snooze 10m
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Floating Badge 2 (Heartbeat) -->
+      <div class="floating-badge-heart">
+        <i class="fa-solid fa-heart-pulse heart-pulse-icon"></i>
+        <div class="streak-info">
+          <div class="num" style="color: #ef4444;">72 BPM</div>
+          <div class="label">Vitals Normal</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= FEATURES GRID ================= -->
+  <section class="features-section" id="features">
+    <div class="section-header-center">
+      <span class="section-eyebrow">Everything You Need</span>
+      <h2 class="section-main-title">Crafted for Your Well-being</h2>
+      <p class="section-subtext">A complete set of tools designed to remove medication stress and keep you and your loved ones on a healthy, consistent path.</p>
+    </div>
+
+    <div class="features-grid">
+      
+      <!-- Feature 1 -->
+      <div class="feature-glass-card">
+        <div class="feature-icon-box icon-blue">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <h3>Audible Ringtone Alarms</h3>
+        <p>Crystal-clear audio alarms that cut through the noise so you never forget time-sensitive prescriptions.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-glass-card">
+        <div class="feature-icon-box icon-teal">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <h3>Custom Dosage Schedules</h3>
+        <p>Set custom morning, afternoon, evening, or bed-time frequencies with tailored dosage quantities and notes.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-glass-card">
+        <div class="feature-icon-box icon-green">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <h3>Real-time Status Tracking</h3>
+        <p>Instantly see today's taken vs pending medications with dynamic counters and visual compliance stats.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-glass-card">
+        <div class="feature-icon-box icon-purple">
+          <i class="fa-solid fa-user-doctor"></i>
+        </div>
+        <h3>Doctor-Ready History</h3>
+        <p>Access your complete history of medication compliance whenever you visit your physician or clinic.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-glass-card">
+        <div class="feature-icon-box icon-amber">
+          <i class="fa-solid fa-moon"></i>
+        </div>
+        <h3>Comfortable Dark Theme</h3>
+        <p>Thoughtfully engineered with dark mode support to prevent harsh glare during night-time medication checks.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-glass-card">
+        <div class="feature-icon-box icon-pink">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3>Secure & Private</h3>
+        <p>Your medical schedule and personal health records remain private, protected by rigorous security practices.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="how-it-works-section" id="how-it-works">
+    <div class="section-header-center">
+      <span class="section-eyebrow">Simple & Intuitive</span>
+      <h2 class="section-main-title">How MediCare Works</h2>
+      <p class="section-subtext">Get your medication routine organized in less than 60 seconds.</p>
+    </div>
+
+    <div class="steps-container">
+      <div class="step-card">
+        <div class="step-num-badge">1</div>
+        <h4>Add Medication</h4>
+        <p>Enter the medicine name, dosage amount (e.g. 1 tablet), and your preferred reminder time.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num-badge">2</div>
+        <h4>Get Alerted</h4>
+        <p>Receive sound notifications the exact minute your dose is due, preventing delays or skipped doses.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-num-badge">3</div>
+        <h4>Track Progress</h4>
+        <p>Tap "Mark as Taken" to build your daily health streak and keep your medical regimen accurate.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CALL TO ACTION BANNER ================= -->
+  <div class="cta-banner-wrapper">
+    <div class="cta-banner-card">
+      <h2>Take Control of Your Health Today</h2>
+      <p>Join thousands of individuals and families maintaining accurate medication routines effortlessly.</p>
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn-primary-hero">
+          Go To Your Dashboard <i class="fa-solid fa-arrow-right arrow-icon"></i>
+        </a>
+      {% else %}
+        <a href="{% url 'register' %}" class="btn-primary-hero">
+          Create Your Free Account <i class="fa-solid fa-arrow-right arrow-icon"></i>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="home-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-icon-wrapper" style="width: 32px; height: 32px; font-size: 1rem;">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span>MediCare Reminder</span>
+      </div>
+
+      <div class="footer-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 MediCare Reminder. All rights reserved.</div>
+      <div>Designed & Built with ❤️ by <strong>Ritik</strong></div>
+    </div>
+  </footer>
+
+  <!-- ================= AUDIO ELEMENT ================= -->
+  <audio id="demoAudio" src="{% static 'sound/m_tone.mp3' %}" preload="auto"></audio>
+
+  <!-- ================= JAVASCRIPT ================= -->
+  <script>
+    // 1. Live Digital Clock in Hero Card
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      
+      hours = hours % 12;
+      hours = hours ? hours : 12; // 0 becomes 12
+      const formattedHours = String(hours).padStart(2, '0');
+
+      const clockEl = document.getElementById('cardClock');
+      const ampmEl = document.getElementById('cardAmPm');
+      if (clockEl) clockEl.textContent = `${formattedHours}:${minutes}:${seconds}`;
+      if (ampmEl) ampmEl.textContent = ampm;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. Interactive Alarm Sound Tester
+    const audio = document.getElementById('demoAudio');
+    const testAlarmBtn = document.getElementById('testAlarmBtn');
+    const alarmBtnText = document.getElementById('alarmBtnText');
+    const alarmBtnIcon = document.getElementById('alarmBtnIcon');
+    const equalizer = document.getElementById('equalizerWave');
+    let isPlaying = false;
+
+    if (testAlarmBtn && audio) {
+      testAlarmBtn.addEventListener('click', () => {
+        if (!isPlaying) {
+          audio.currentTime = 0;
+          audio.play().then(() => {
+            isPlaying = true;
+            alarmBtnText.textContent = "Stop Alarm";
+            alarmBtnIcon.className = "fa-solid fa-volume-xmark";
+            testAlarmBtn.style.borderColor = "#ef4444";
+            testAlarmBtn.style.color = "#ef4444";
+          }).catch(err => {
+            console.log("Audio play blocked by browser policy:", err);
+            alert("🔔 Ringtone playing simulated! (Tap screen to allow audio)");
+          });
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          isPlaying = false;
+          alarmBtnText.textContent = "Test Alarm Tone";
+          alarmBtnIcon.className = "fa-solid fa-volume-high";
+          testAlarmBtn.style.borderColor = "";
+          testAlarmBtn.style.color = "";
+        }
+      });
+
+      audio.addEventListener('ended', () => {
+        isPlaying = false;
+        alarmBtnText.textContent = "Test Alarm Tone";
+        alarmBtnIcon.className = "fa-solid fa-volume-high";
+        testAlarmBtn.style.borderColor = "";
+        testAlarmBtn.style.color = "";
+      });
+    }
+
+    // 3. Interactive Hero "Mark as Taken" Simulation
+    const heroTakeBtn = document.getElementById('heroTakeBtn');
+    const heroTakeText = document.getElementById('heroTakeText');
+    let isTaken = false;
+
+    if (heroTakeBtn) {
+      heroTakeBtn.addEventListener('click', () => {
+        isTaken = !isTaken;
+        if (isTaken) {
+          heroTakeBtn.style.background = "linear-gradient(135deg, #059669, #047857)";
+          heroTakeText.textContent = "Taken! 🎉";
+          heroTakeBtn.style.transform = "scale(0.96)";
+          setTimeout(() => { heroTakeBtn.style.transform = ""; }, 200);
+          
+          // Confetti or visual reward toast
+          const tag = document.querySelector('.card-pill-tag');
+          if (tag) {
+            tag.style.background = "rgba(16, 185, 129, 0.2)";
+            tag.style.borderColor = "#10b981";
+            tag.style.color = "#34d399";
+            tag.innerHTML = `<i class="fa-solid fa-circle-check"></i> COMPLETED`;
+          }
+        } else {
+          heroTakeBtn.style.background = "";
+          heroTakeText.textContent = "Mark as Taken";
+          const tag = document.querySelector('.card-pill-tag');
+          if (tag) {
+            tag.style.background = "";
+            tag.style.borderColor = "";
+            tag.style.color = "";
+            tag.innerHTML = `<i class="fa-solid fa-bell fa-shake"></i> DUE NOW`;
+          }
+        }
+      });
+    }
+
+    // 4. Hero "Snooze" Simulation
+    const heroSnoozeBtn = document.getElementById('heroSnoozeBtn');
+    if (heroSnoozeBtn) {
+      heroSnoozeBtn.addEventListener('click', () => {
+        heroSnoozeBtn.textContent = "⏰ Snoozed for 10m";
+        heroSnoozeBtn.style.color = "#fbbf24";
+        setTimeout(() => {
+          heroSnoozeBtn.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> Snooze 10m`;
+          heroSnoozeBtn.style.color = "";
+        }, 3000);
+      });
+    }
+  </script>
+</body>
+</html>

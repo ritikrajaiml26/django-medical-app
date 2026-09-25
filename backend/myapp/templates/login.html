@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - MediCare Reminder</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Modern Animated App CSS -->
+  <link rel="stylesheet" href="{% static 'css/app_modern.css' %}">
+</head>
+
+<body class="modern-app-body">
+
+  <!-- Ambient Glowing Background -->
+  <div class="app-ambient-bg">
+    <div class="app-glow-orb orb-top"></div>
+    <div class="app-glow-orb orb-bottom"></div>
+    <div class="app-grid-pattern"></div>
+  </div>
+
+  <!-- Minimal Header -->
+  <nav class="app-navbar">
+    <div class="app-nav-inner">
+      <a href="{% url 'home' %}" class="app-brand">
+        <div class="app-brand-icon">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span>MediCare</span>
+      </a>
+
+      <div class="app-nav-right">
+        <button id="themeToggle" class="btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+        <a href="{% url 'register' %}" class="user-profile-badge" style="color: #38bdf8;">
+          <i class="fa-solid fa-user-plus"></i> Register
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login Form Box -->
+  <main class="auth-page-container">
+    <div class="auth-glass-box">
+      
+      <div class="auth-header-wrapper">
+        <div class="auth-logo-badge">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Sign in to manage your medical schedule & alarms</p>
+      </div>
+
+      {% if error %}
+      <div class="auth-alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ error }}</span>
+      </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-with-icon">
+            <input type="email" id="email" name="email" class="app-input" placeholder="name@example.com" value="{{ email|default:'' }}" required autocomplete="email">
+            <i class="fa-solid fa-envelope field-icon"></i>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="password" name="password" class="app-input" placeholder="Enter your password" required autocomplete="current-password">
+            <i class="fa-solid fa-lock field-icon"></i>
+            <button type="button" id="togglePasswordBtn" style="position: absolute; right: 1rem; background: none; border: none; color: var(--text-dim); cursor: pointer;">
+              <i class="fa-solid fa-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth-submit">
+          <span>Sign In to Dashboard</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div class="auth-bottom-links">
+        <p>Don't have an account? <a href="{% url 'register' %}" class="auth-link">Create Account</a></p>
+        <p style="margin-top: 0.75rem;">
+          <a href="{% url 'home' %}" style="color: var(--text-dim); text-decoration: none; font-size: 0.85rem;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Home
+          </a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    © 2026 MediCare Reminder | Made with ❤️ by Ritik
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('medicareTheme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-theme');
+      if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('medicareTheme', isLight ? 'light' : 'dark');
+        themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      });
+    }
+
+    // Toggle password visibility
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const pwdInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    if (toggleBtn && pwdInput) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = pwdInput.type === 'password';
+        pwdInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+  </script>
+</body>
+</html>

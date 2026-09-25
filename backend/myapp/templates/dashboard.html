@@ -1,0 +1,551 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - MediCare Reminder</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Modern Animated App CSS -->
+  <link rel="stylesheet" href="{% static 'css/app_modern.css' %}">
+</head>
+
+<body class="modern-app-body">
+
+  <!-- Ambient Glowing Background -->
+  <div class="app-ambient-bg">
+    <div class="app-glow-orb orb-top"></div>
+    <div class="app-glow-orb orb-bottom"></div>
+    <div class="app-grid-pattern"></div>
+  </div>
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <nav class="app-navbar">
+    <div class="app-nav-inner">
+      <a href="{% url 'home' %}" class="app-brand">
+        <div class="app-brand-icon">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <span>MediCare</span>
+      </a>
+
+      <div class="app-nav-right">
+        <!-- Audio Alarm Test / Status Button -->
+        <button id="audioUnlockBtn" class="audio-status-pill" title="Click to test / enable alarm sound">
+          <i class="fa-solid fa-volume-high" id="audioPillIcon"></i>
+          <span id="audioPillText">Sound Active</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        <!-- User Profile Badge -->
+        <a href="{% url 'profile' %}" class="user-profile-badge" title="My Profile">
+          {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" class="avatar-circle" alt="User Avatar">
+          {% else %}
+            <div class="avatar-circle">
+              {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <span>{{ request.user.first_name|default:request.user.username }}</span>
+        </a>
+
+        <!-- Logout -->
+        <a href="{% url 'logout' %}" class="btn-nav-logout" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= DASHBOARD MAIN ================= -->
+  <main class="dashboard-main-container">
+    
+    <!-- Welcome Greeting Banner -->
+    <div class="dash-welcome-banner">
+      <div class="dash-welcome-text">
+        <h1>Hello, {{ request.user.first_name|default:request.user.username }} 👋</h1>
+        <p>
+          <span id="dashLiveClock" style="font-weight: 700; color: #38bdf8;">--:--:--</span>
+          &nbsp;•&nbsp;
+          <span id="dashLiveDate">Today's Schedule</span>
+        </p>
+      </div>
+
+      <div class="dash-banner-actions">
+        <a href="{% url 'add_reminder' %}" class="btn-primary-add">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>Add New Medicine</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Summary Stats Grid -->
+    <div class="dash-stats-grid">
+      
+      <!-- Total -->
+      <div class="dash-stat-card">
+        <div class="stat-icon-wrapper stat-total">
+          <i class="fa-solid fa-pills"></i>
+        </div>
+        <div>
+          <div class="stat-info-title">Total Medicines</div>
+          <div class="stat-info-val">{{ total_count }}</div>
+        </div>
+      </div>
+
+      <!-- Taken -->
+      <div class="dash-stat-card">
+        <div class="stat-icon-wrapper stat-taken">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+          <div class="stat-info-title">Doses Taken</div>
+          <div class="stat-info-val" style="color: #34d399;">{{ taken_count }}</div>
+        </div>
+      </div>
+
+      <!-- Pending -->
+      <div class="dash-stat-card">
+        <div class="stat-icon-wrapper stat-pending">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div>
+          <div class="stat-info-title">Pending Doses</div>
+          <div class="stat-info-val" style="color: #fbbf24;">{{ pending_count }}</div>
+        </div>
+      </div>
+
+      <!-- Compliance Rate -->
+      <div class="dash-stat-card">
+        <div class="stat-icon-wrapper stat-time">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </div>
+        <div>
+          <div class="stat-info-title">Compliance</div>
+          <div class="stat-info-val" style="color: #a78bfa;">
+            {% if total_count > 0 %}
+              {% widthratio taken_count total_count 100 %}%
+            {% else %}
+              100%
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= REMINDERS SECTION & TABLE ================= -->
+    <div class="reminders-card-section">
+      
+      <div class="section-head-bar">
+        <h2>
+          <i class="fa-solid fa-notes-medical" style="color: #06b6d4;"></i>
+          <span>Medication Schedule</span>
+        </h2>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All ({{ total_count }})</button>
+          <button class="filter-tab" data-filter="pending">Pending ({{ pending_count }})</button>
+          <button class="filter-tab" data-filter="taken">Taken ({{ taken_count }})</button>
+        </div>
+      </div>
+
+      {% if reminders %}
+        <div class="reminders-table-wrapper">
+          <table class="modern-reminders-table" id="remindersTable">
+            <thead>
+              <tr>
+                <th>Medicine Name</th>
+                <th>Scheduled Date</th>
+                <th>Dose Time</th>
+                <th>Notes / Instructions</th>
+                <th>Status</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in reminders %}
+              <tr 
+                class="reminder-row"
+                id="row-{{ r.id }}"
+                data-id="{{ r.id }}"
+                data-medicine="{{ r.medicine }}"
+                data-date="{{ r.date|date:'Y-m-d' }}"
+                data-time="{{ r.time|time:'H:i' }}"
+                data-status="{% if r.status %}taken{% else %}pending{% endif %}">
+                
+                <!-- Medicine Name -->
+                <td>
+                  <div class="med-cell">
+                    <div class="med-cell-icon">
+                      <i class="fa-solid fa-capsules"></i>
+                    </div>
+                    <div>
+                      <div class="med-title">{{ r.medicine }}</div>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Date -->
+                <td>
+                  <span style="font-weight: 600; color: var(--text-main);">
+                    {{ r.date|date:"d M, Y" }}
+                  </span>
+                </td>
+
+                <!-- Time -->
+                <td>
+                  <span style="display: inline-flex; align-items: center; gap: 0.35rem; color: #38bdf8; font-weight: 700;">
+                    <i class="fa-regular fa-clock"></i> {{ r.time|time:"h:i A" }}
+                  </span>
+                </td>
+
+                <!-- Note -->
+                <td>
+                  <span class="med-note-sub">{{ r.note|default:"No specific notes" }}</span>
+                </td>
+
+                <!-- Status -->
+                <td>
+                  {% if r.status %}
+                    <span class="status-badge taken">
+                      <i class="fa-solid fa-check"></i> Taken
+                    </span>
+                  {% else %}
+                    <span class="status-badge pending">
+                      <i class="fa-regular fa-hourglass-half"></i> Pending
+                    </span>
+                  {% endif %}
+                </td>
+
+                <!-- Actions -->
+                <td style="text-align: right;">
+                  <div class="action-btn-group" style="justify-content: flex-end;">
+                    
+                    <!-- Toggle Taken/Pending -->
+                    <a href="{% url 'taken' r.id %}" class="btn-action-take" title="Toggle Taken/Pending">
+                      {% if r.status %}
+                        <i class="fa-solid fa-rotate-left"></i> Undo
+                      {% else %}
+                        <i class="fa-solid fa-check"></i> Take
+                      {% endif %}
+                    </a>
+
+                    <!-- Edit Button -->
+                    <button type="button" class="btn-action-edit" onclick="toggleEditRow('{{ r.id }}')" title="Quick Edit">
+                      <i class="fa-solid fa-pen"></i>
+                    </button>
+
+                    <!-- Delete Button -->
+                    <a href="{% url 'delete' r.id %}" class="btn-action-delete" onclick="return confirm('Are you sure you want to delete {{ r.medicine }}?');" title="Delete Reminder">
+                      <i class="fa-solid fa-trash-can"></i>
+                    </a>
+
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Inline Edit Row (Drawer) -->
+              <tr id="editRow{{ r.id }}" class="edit-drawer-row">
+                <td colspan="6">
+                  <form method="POST" action="{% url 'edit' r.id %}" class="edit-drawer-form">
+                    {% csrf_token %}
+                    <div>
+                      <label style="font-size: 0.75rem; color: var(--text-dim); display: block;">Medicine</label>
+                      <input type="text" name="medicine" class="app-input" value="{{ r.medicine }}" required style="padding: 0.5rem 0.8rem;">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.75rem; color: var(--text-dim); display: block;">Date</label>
+                      <input type="date" name="date" class="app-input" value="{{ r.date|date:'Y-m-d' }}" required style="padding: 0.5rem 0.8rem;">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.75rem; color: var(--text-dim); display: block;">Time</label>
+                      <input type="time" name="time" class="app-input" value="{{ r.time|time:'H:i' }}" required style="padding: 0.5rem 0.8rem;">
+                    </div>
+                    <div>
+                      <label style="font-size: 0.75rem; color: var(--text-dim); display: block;">Notes</label>
+                      <input type="text" name="note" class="app-input" value="{{ r.note }}" placeholder="e.g. After lunch" style="padding: 0.5rem 0.8rem;">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                      <button type="submit" class="btn-primary-add" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Save</button>
+                      <button type="button" class="btn-theme-toggle" onclick="toggleEditRow('{{ r.id }}')" style="width: 34px; height: 34px;">✕</button>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <!-- Empty State -->
+        <div class="empty-reminders-box">
+          <div class="empty-icon">
+            <i class="fa-solid fa-notes-medical"></i>
+          </div>
+          <h3>No Reminders Added Yet</h3>
+          <p>Get started by adding your first daily prescription or medication reminder.</p>
+          <a href="{% url 'add_reminder' %}" class="btn-primary-add">
+            <i class="fa-solid fa-circle-plus"></i> Add Your First Medicine
+          </a>
+        </div>
+      {% endif %}
+
+    </div>
+  </main>
+
+  <!-- ================= ACTIVE ALARM POPUP OVERLAY ================= -->
+  <div class="alarm-overlay" id="alarmModal">
+    <div class="alarm-modal-box">
+      
+      <div class="alarm-bell-icon">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+
+      <div class="alarm-modal-title">Time For Your Medicine!</div>
+      <div class="alarm-med-name" id="modalMedName">Amoxicillin 500mg</div>
+      <div class="alarm-med-timing" id="modalMedTime">Scheduled for 09:00 AM</div>
+
+      <div class="alarm-actions">
+        <a id="modalTakeLink" href="#" class="btn-alarm-take">
+          <i class="fa-solid fa-check"></i> Mark as Taken & Stop Alarm
+        </a>
+        <button type="button" class="btn-alarm-snooze" id="modalSnoozeBtn">
+          <i class="fa-solid fa-clock-rotate-left"></i> Snooze 5 Minutes
+        </button>
+        <button type="button" class="btn-alarm-snooze" id="modalDismissBtn" style="color: #ef4444; border-color: rgba(239,68,68,0.3);">
+          <i class="fa-solid fa-volume-xmark"></i> Dismiss Alarm
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="alarmAudio" preload="auto">
+    <source src="{% static 'sound/m_tone.mp3' %}" type="audio/mp3">
+  </audio>
+
+  <!-- Modern Footer -->
+  <footer class="app-footer">
+    © 2026 MediCare Reminder | Built with ❤️ by Ritik
+  </footer>
+
+  <!-- ================= JS SCRIPT SECTION ================= -->
+  <script>
+    // 1. Theme Toggle
+    const themeBtn = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('medicareTheme');
+    if (savedTheme === 'light') {
+      document.body.classList.add('light-theme');
+      if (themeBtn) themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+    }
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        localStorage.setItem('medicareTheme', isLight ? 'light' : 'dark');
+        themeBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      });
+    }
+
+    // 2. Live Header Clock & Date
+    function updateDashClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const dateStr = now.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      
+      const clockEl = document.getElementById('dashLiveClock');
+      const dateEl = document.getElementById('dashLiveDate');
+      if (clockEl) clockEl.textContent = timeStr;
+      if (dateEl) dateEl.textContent = dateStr;
+    }
+    setInterval(updateDashClock, 1000);
+    updateDashClock();
+
+    // 3. Inline Edit Drawer Toggle
+    function toggleEditRow(id) {
+      const editRow = document.getElementById('editRow' + id);
+      if (editRow) {
+        const isShown = editRow.style.display === 'table-row';
+        editRow.style.display = isShown ? 'none' : 'table-row';
+      }
+    }
+
+    // 4. Filter Tabs
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const reminderRows = document.querySelectorAll('.reminder-row');
+    filterTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.getAttribute('data-filter');
+
+        reminderRows.forEach(row => {
+          const status = row.getAttribute('data-status');
+          if (filter === 'all' || status === filter) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 5. SMART ALARM AUDIO ENGINE
+    const alarmAudio = document.getElementById('alarmAudio');
+    const alarmModal = document.getElementById('alarmModal');
+    const modalMedName = document.getElementById('modalMedName');
+    const modalMedTime = document.getElementById('modalMedTime');
+    const modalTakeLink = document.getElementById('modalTakeLink');
+    const modalSnoozeBtn = document.getElementById('modalSnoozeBtn');
+    const modalDismissBtn = document.getElementById('modalDismissBtn');
+    const audioUnlockBtn = document.getElementById('audioUnlockBtn');
+    const audioPillIcon = document.getElementById('audioPillIcon');
+    const audioPillText = document.getElementById('audioPillText');
+
+    let audioUnlocked = false;
+    let alarmPlaying = false;
+    let activeAlarmId = null;
+    let snoozedIds = new Set();
+    let triggeredThisMinute = new Set();
+
+    // Audio unlock on any interaction
+    function unlockAudioContext() {
+      if (!audioUnlocked && alarmAudio) {
+        alarmAudio.play().then(() => {
+          alarmAudio.pause();
+          alarmAudio.currentTime = 0;
+          audioUnlocked = true;
+          audioPillText.textContent = "Sound Ready";
+          audioUnlockBtn.style.background = "rgba(16, 185, 129, 0.15)";
+        }).catch(() => {});
+      }
+    }
+    document.addEventListener('click', unlockAudioContext, { once: true });
+
+    if (audioUnlockBtn) {
+      audioUnlockBtn.addEventListener('click', () => {
+        unlockAudioContext();
+        if (!alarmPlaying) {
+          alarmAudio.currentTime = 0;
+          alarmAudio.play().then(() => {
+            alarmPlaying = true;
+            audioPillText.textContent = "Playing...";
+            audioPillIcon.className = "fa-solid fa-volume-high fa-bounce";
+            setTimeout(() => {
+              if (alarmPlaying && !alarmModal.style.display.includes('flex')) {
+                stopAlarm();
+              }
+            }, 5000);
+          }).catch(err => {
+            alert("Please allow audio permission in browser.");
+          });
+        } else {
+          stopAlarm();
+        }
+      });
+    }
+
+    function playAlarmSound() {
+      if (alarmAudio) {
+        alarmAudio.loop = true;
+        alarmAudio.play().catch(e => console.log("Audio play blocked:", e));
+        alarmPlaying = true;
+        audioPillText.textContent = "ALARM RINGING";
+        audioPillIcon.className = "fa-solid fa-bell fa-shake";
+        audioUnlockBtn.style.background = "rgba(239, 68, 68, 0.25)";
+        audioUnlockBtn.style.color = "#ef4444";
+        audioUnlockBtn.style.borderColor = "#ef4444";
+      }
+    }
+
+    function stopAlarm() {
+      if (alarmAudio) {
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0;
+        alarmAudio.loop = false;
+      }
+      alarmPlaying = false;
+      if (alarmModal) alarmModal.style.display = 'none';
+      audioPillText.textContent = "Sound Active";
+      audioPillIcon.className = "fa-solid fa-volume-high";
+      audioUnlockBtn.style.background = "";
+      audioUnlockBtn.style.color = "";
+      audioUnlockBtn.style.borderColor = "";
+    }
+
+    // Modal Actions
+    if (modalDismissBtn) {
+      modalDismissBtn.addEventListener('click', stopAlarm);
+    }
+
+    if (modalSnoozeBtn) {
+      modalSnoozeBtn.addEventListener('click', () => {
+        if (activeAlarmId) {
+          snoozedIds.add(activeAlarmId);
+          setTimeout(() => {
+            snoozedIds.delete(activeAlarmId);
+          }, 300000); // 5 minutes snooze
+        }
+        stopAlarm();
+      });
+    }
+
+    // Checking Reminders Function
+    function checkReminders() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+      const currentDay = String(now.getDate()).padStart(2, '0');
+      const todayStr = `${currentYear}-${currentMonth}-${currentDay}`;
+
+      const currentHours = String(now.getHours()).padStart(2, '0');
+      const currentMins = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = `${currentHours}:${currentMins}`;
+      const minuteKey = `${todayStr}_${timeStr}`;
+
+      reminderRows.forEach(row => {
+        const id = row.getAttribute('data-id');
+        const status = row.getAttribute('data-status');
+        const rowDate = row.getAttribute('data-date');
+        const rowTime = row.getAttribute('data-time');
+        const medName = row.getAttribute('data-medicine');
+
+        // Check if pending, date is today, time matches, and not snoozed
+        if (status === 'pending' && rowDate === todayStr && rowTime === timeStr) {
+          const triggerKey = `${id}_${minuteKey}`;
+          if (!triggeredThisMinute.has(triggerKey) && !snoozedIds.has(id)) {
+            triggeredThisMinute.add(triggerKey);
+            activeAlarmId = id;
+
+            // Show Alarm Modal
+            if (modalMedName) modalMedName.textContent = medName;
+            if (modalMedTime) modalMedTime.textContent = `Scheduled for ${rowTime}`;
+            if (modalTakeLink) modalTakeLink.href = `/taken/${id}/`;
+            if (alarmModal) alarmModal.style.display = 'flex';
+
+            playAlarmSound();
+          }
+        }
+      });
+    }
+
+    // Run check immediately and then every 10 seconds
+    checkReminders();
+    setInterval(checkReminders, 10000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body.auth-body {
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-container {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0px 8px 25px rgba(0,0,0,0.2);
+  width: 350px;
+  text-align: center;
+}
+
+.auth-container h2 {
+  color: #185a9d;
+  margin-bottom: 20px;
+}
+
+.auth-container form input {
+  width: 100%;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.auth-container form input:focus {
+  border-color: #43cea2;
+}
+
+.auth-container button {
+  width: 100%;
+  background: linear-gradient(90deg, #43cea2, #185a9d);
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-container button:hover {
+  transform: scale(1.05);
+}
+
+.auth-container p {
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.auth-container a {
+  color: #185a9d;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* DASHBOARD DESIGN */
+.dashboard-body {
+  background: linear-gradient(120deg, #56ccf2, #2f80ed);
+  min-height: 100vh;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.15);
+  padding: 15px 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.navbar h2 {
+  color: #fff;
+  font-weight: 600;
+}
+
+.navbar button {
+  background: #ff7675;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.navbar button:hover {
+  background: #d63031;
+}
+
+.dashboard-container {
+  margin: 40px auto;
+  max-width: 800px;
+  background: rgba(255,255,255,0.1);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-container h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.add-form, .medicine-list {
+  margin-top: 25px;
+  background: rgba(255,255,255,0.15);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.add-form h4, .medicine-list h4 {
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.add-form form input, .add-form form button {
+  width: 100%;
+  padding: 10px 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+}
+
+.add-form form input {
+  background: #f8f8f8;
+}
+
+.add-form form button {
+  background: linear-gradient(90deg, #43cea2, #185a9d);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-form form button:hover {
+  transform: scale(1.05);
+}
+
+table {
+  width: 100%;
+  margin-top: 15px;
+  border-collapse: collapse;
+  background: white;
+  color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: center;
+}
+
+table th {
+  background: #185a9d;
+  color: white;
+}
+
+.status-taken {
+  color: green;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: red;
+  font-weight: 600;
+}
+
+.action-btn {
+  background: #43cea2;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.action-btn:hover {
+  background: #2ecc71;
+}
+
+.delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-left: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+  transform: scale(1.05);
+}
+.summary-card {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+.summary-card h4 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+.edit-btn {
+  background: #f1c40f;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-left: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.edit-btn:hover {
+  background: #d4ac0d;
+  transform: scale(1.05);
+}
+/* 🪄 Navbar with Icons */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 15px 15px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+  animation: fadeDown 0.8s ease;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-left i {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logout-btn, .theme-btn {
+  background: linear-gradient(90deg, #43cea2, #185a9d);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.logout-btn:hover, .theme-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 🌙 Dark Mode Styling */
+.dark-mode {
+  background: linear-gradient(135deg, #1f1c2c, #928dab);
+  color: #eee;
+}
+
+.dark-mode .navbar {
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 4px 20px rgba(255,255,255,0.2);
+}
+
+.dark-mode table {
+  background: #2c2c2c;
+  color: #eee;
+}
+
+.dark-mode .summary-card {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+
+.dark-mode .add-form input {
+  background: #333;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+/* 🌞 Light Mode */
+.light-mode {
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  color: #fff;
+}
+
+/* ✨ Animation */
+@keyframes fadeDown {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+/* 📱 Responsive Design for Mobile Devices */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .dashboard-container {
+    width: 95%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .summary-card, .add-form, .medicine-list {
+    padding: 15px;
+  }
+
+  table {
+    font-size: 0.8rem;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .add-form form input, 
+  .add-form form button {
+    font-size: 0.9rem;
+  }
+
+  .theme-btn, .logout-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+}
+

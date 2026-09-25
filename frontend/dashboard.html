@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Medicine Reminder</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- 🪄 FontAwesome for icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body class="dashboard-body light-mode">
+  <nav class="navbar">
+    <div class="nav-left">
+      <i class="fas fa-pills"></i>
+      <h2>Medicine Reminder</h2>
+    </div>
+    <div class="nav-right">
+      <button id="themeToggle" class="theme-btn">
+        🌙 Dark Mode
+      </button>
+      <button id="logoutBtn" class="logout-btn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="dashboard-container">
+    <h3>Hello, <span id="userName"></span> 👋</h3>
+
+    <!-- 📊 Today’s Summary -->
+    <div class="summary-card">
+      <h4>📅 Today’s Summary</h4>
+      <p>Total Medicines: <span id="totalMeds">0</span></p>
+      <p>Taken: <span id="takenMeds">0</span></p>
+      <p>Pending: <span id="pendingMeds">0</span></p>
+    </div>
+
+    <!-- ➕ Add Medicine -->
+    <div class="add-form">
+      <h4>Add New Medicine</h4>
+      <form id="medicineForm">
+        <input type="text" id="medicineName" placeholder="Medicine Name" required>
+        <input type="text" id="dosage" placeholder="Dosage (e.g., 1 tablet)" required>
+        <input type="time" id="medicineTime" required>
+        <button type="submit">Add Medicine</button>
+      </form>
+    </div>
+
+    <!-- 📋 Medicine Table -->
+    <div class="medicine-list">
+      <h4>My Medicines</h4>
+      <table id="medicineTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Dosage</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 🔔 Reminder Sound -->
+  <audio id="reminderSound" src="iphone_16_messege_tone.mp3" preload="auto"></audio>
+
+  <script src="reminder.js"></script>
+
+  <!-- 🌙 Dark Mode Script -->
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      body.classList.toggle('light-mode');
+      themeToggle.textContent = body.classList.contains('dark-mode')
+        ? '☀️ Light Mode'
+        : '🌙 Dark Mode';
+    });
+  </script>
+</body>
+</html>

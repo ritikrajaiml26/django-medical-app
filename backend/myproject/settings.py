@@ -126,5 +126,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'myproject/myapp/static'
+    BASE_DIR / 'myapp/static'
 ]
